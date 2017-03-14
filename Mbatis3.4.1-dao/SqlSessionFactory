@@ -1,0 +1,48 @@
+	1、SqlSessionFactoryBuilder
+	通过SqlSessionFactoryBuilder 创建会话工厂 SqlSession
+	2通过SqlSessionFactory创建SqlSession，使用单例模式管理SqlSessionFactory（工厂一旦创建，使用一个实例）
+	将来Mbatis和Spring整合后，使用单例模式SqlSessionFctory。
+	
+	SqlSession  最佳应用场合在，方法体内，定义成局部变量
+	
+	
+	两种写dao的方法
+	1、原始dao开发  （程序员需要写dao接口 和实现类）
+	思路：
+	需要向dao实现类注入SqlSessionFactory，在方法体内通过SqlSessionFactory创建SqlSession
+	定义：dao接口
+	
+		daoimpl实现类
+	总结：
+	1、dao中接口实现类中存在大量的模板方法,设想：把这些重复代码提取出来，大大减少程序员的工作量。
+	2、调用SqlSession方法时将statement的ID硬编码了
+	3、调用SqlSession方法传入的变量，由于调用SqlSession方法使用泛型，即使变量类型传入错误，在编译阶段不报错。
+	不利于程序员开发。
+	
+	
+	2、mapper代理 （程序员只需要写mapper接口（相当于dao接口））
+	思路：
+	
+	2、程序员还需要编写mapper.xml映射文件
+	1、程序员编写mapper接口需要遵循一些开发规范
+	3、mybatis可以自动生成mapper接口实现类代理对象
+	开发规范：
+	1、在mapper.xml中namespace等于mapper接口地址
+		
+	<select id="findByName" parameterType="int"
+		resultType="com.woniuxy.entity.User">
+		SELECT*FROM users WHERE `name` LIKE '%${value}%'
+	</select>
+	
+	2、mapper.java接口中的方法名和mapper.xml中statement的id一致
+	3、mapper.java接口中的方法输入参数类型和mapper.xml中parameterType指定的类型一致
+	4、mapper.java接口中的方法返回值类型和mapper.xml中statement的resultType指定的类型一致
+		public User findUserId(int id) throws Exception;
+	总结：
+	以上4条开发规范是对下边代码进行统一生成
+	User user = sqlSession.selectOne("test.findByName", id);
+	sqlSession.insert("test.insertUser", user); 
+	sqlSession.delete("test.deleteUser", id);
+	List<User> list = sqlSession.selectList("test.findByName", name);
+	
+	

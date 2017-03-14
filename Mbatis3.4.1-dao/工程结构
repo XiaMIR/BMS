@@ -1,0 +1,8 @@
+# sqlmap 配置映射文件（加载）
+# SqlMapConfig.xml 全局配置文件
+
+# 得到SqlSessionFactory 工厂
+
+# 再得到SqlSession
+
+# 再操作SqlSession

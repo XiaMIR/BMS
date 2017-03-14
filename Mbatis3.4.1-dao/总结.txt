@@ -1,0 +1,59 @@
+	
+	<?xml version="1.0" encoding="UTF-8"?> 
+	<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<!-- namespace 命名空间，作用就是对sql进行分类化管理，理解sql隔离
+	注意：使用 namespace 代理方法来发，namespace 有特殊重要作用
+	 -->
+	<mapper namespace="test">
+	<!-- 映射文件中配置很多sql语句，通过select 执行数据查询
+	id 表示映射文件中的sql，称为statement的id
+	将sql语句封装到mappedStatement对象中 ，所以将id称为Statement的id
+	paramenterType :指定输入参数类型，这里指定得是int型
+	#{}表示一个占位符
+	#{id}：其中id表示接受输入的参数，参数的名称就是id 如果输入的简单类型
+	，#{}的参数名可以是任意，可以使value或其他名称
+	resultType: 指定sql输出结果，所映射的java对象类型，select指定resultType表示单条记录映射的java对象-->
+	<!-- 需求：通过ID查询用户表的记录 -->
+	<select id="findById" parameterType="java.lang.String" resultType="com.woniuxy.po.User">
+	<!-- sql的查询语句 -->
+	SELECT * FROM users WHERE id =#{value}
+	
+	</select>
+	<!-- 根据用户名模糊查询用户信息，可以返回多条 
+	resultType：指定就是单挑记录所映射的java对象类型
+	${}:表示拼接sql串，将接收到的参数的内容不加任何修拼接在SQL中
+	使用${}拼接sql，引起sql注入
+	${value}:接受输入参数内容，如果传入简单类型，${}中只能使用value
+	-->
+	
+	<select id="findByName" parameterType="java.lang.String" resultType="com.woniuxy.po.User">
+	SELECT*FROM users WHERE `name` LIKE '%${value}%'
+	</select>
+	
+	
+	</mapper>
+	
+	
+	parameterType
+	
+	在映射文件中通过parameterType指定输入参数的类型。
+	resultType
+	
+	在映射文件中通过resultType指定输结果的类型
+	
+	3、#{}和${}区别
+	
+	#{}表示一个占位符号 ；#{}表示接受输入参数，类型可以是简单类型pojo，hashmap；
+	如果接受简单类型。#{}种可以写成value或其他名称
+	#{}接受pojo的对象值，通过OGNL来解析对象的值，读取对象中的属性值 （通过属性.属性.属性...来获取对象的值）
+	
+	${}表示一个“拼接符”号会引用SQL注入，所以不建议使用${}。
+	${}表示接受输入参数，类型可以是简单类型pojo，hashmap;
+	如果接受简单类型 ${}中只能写成value；
+	
+	
+	
+	selectOne表示查询出一条记录进行映射，如果使用selectOne可以实现使用selectlist也可以实现（list 中只有一个对象）
+	selectlist表示查询出-个列表（多条记录）进行映射。如果使用selectlist查询记录，不能使用selectOne。
